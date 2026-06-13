@@ -1,4 +1,4 @@
-import { Body, Controller, Delete, Get, Param, Patch, Post, Query, ParseIntPipe } from '@nestjs/common';
+import { Body, Controller, Delete, Get, Param, Patch, Post, Query, ParseIntPipe, ValidationPipe } from '@nestjs/common';
 import { UsersService } from './users.service';
 import { CreateUserDto } from './dto/create-user-dto';
 import { UpdateUserDto } from './dto/update-user-dto';
@@ -36,14 +36,15 @@ export class UsersController {
      * //when you go to localhost:3000 with to the GET function with the param of 'interns' below the get by id function, it will return the intern as the id, hence if you need to get another route with the id, it should be placed on top of the get by id param.. so yes, the order does matter.
      */
     
+    // the ValidationPipe validates the dto hence we get messages that make sense when we send the wrong information
     @Post() //POST /users
-    create(@Body()createUserDto: CreateUserDto) { // since we already have the Dto file, the long method "{name?: string, email?: string, role?: 'INTERN' | 'ENGINEER' | 'ADMIN'}" can be replaced with Create/Update UserDto to avoid repetition of codes in the files thus making it simpler.
+    create(@Body(ValidationPipe)createUserDto: CreateUserDto) { // since we already have the Dto file, the long method "{name?: string, email?: string, role?: 'INTERN' | 'ENGINEER' | 'ADMIN'}" can be replaced with Create/Update UserDto to avoid repetition of codes in the files thus making it simpler.
         return this.usersService.create(createUserDto) // createUserDto is used in place of 'user'
 
     }
 
     @Patch(':id') // PATCH /users/:id
-    update(@Param('id', ParseIntPipe)id: number, @Body() updateUserDto: UpdateUserDto) {
+    update(@Param('id', ParseIntPipe)id: number, @Body(ValidationPipe) updateUserDto: UpdateUserDto) {
     return this.usersService.update(id, updateUserDto) // updateUserDto replaces 'userUpdate'
     }
 
